@@ -15,11 +15,11 @@ wi="\033[1;37m"
 #
 #Libraries#
 try:
-    from os import system as sy; import mechanize,socket,optparse 
+    from os import system as sy, path; import requests,socket,optparse 
     sy("")
 except ImportError:
-    print(rd+"\n["+yl+"!"+rd+"] "+yl+"Error: Please Install [ "+gr+"Mechanize"+yl+" ] "+rd+" !!!"+wi)
-    print(wi+"["+gr+"*"+wi+"] Use This Command:>"+gr+" pip install mechanize"+wi)
+    print(rd+"\n["+yl+"!"+rd+"] "+yl+"Error: Please Install [ "+gr+"Requests"+yl+" ] "+rd+" !!!"+wi)
+    print(wi+"["+gr+"*"+wi+"] Use This Command:>"+gr+" pip install requests"+wi)
     exit(1)
 #
 # Check Internet Connection #
@@ -36,13 +36,11 @@ def cnet():
 #
 
 def ISMAIL(email):
-    global br
     try:
-        br.open("https://verifyemailaddress.com/")
-        br.select_form(nr=0)
-        br["email"]=email
-        res = br.submit()
-        if "is valid" in res.get_data():
+        data = {"email": email}
+        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) RockMelt/0.9.58.494 Chrome/11.0.696.71 Safari/534.24'}
+        response = requests.post("https://verifyemailaddress.com/result", headers=headers, data=data).text
+        if "is valid" in response:
             print(wi+"["+gr+"+"+wi+"] Email["+gr+email+wi+"] STATUS["+gr+" Found "+wi+"]")
         else:
             print(yl+"["+rd+"-"+yl+"] Email["+rd+email+yl+"] STATUS["+rd+" Not Found "+yl+"]"+wi)
@@ -71,10 +69,7 @@ Examples:
      |--------
      | python ismail.py -f emails.txt
      |--------
-""")
-br = mechanize.Browser()
-br.addheaders = [('User-agent', 'Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.0.1) Gecko/2008071615 Fedora/3.0.1-1.fc9 Firefox/3.0.1')]
-br.set_handle_robots(False)
+""",version="2.0")
 def Main():
     parse.add_option('-s','-S','--single','--SINGLE', dest="Smail",type="string")
     parse.add_option('-m','-m','--many','--MANY', dest="Mmail",type="string")
@@ -91,6 +86,7 @@ def Main():
         email = email.strip()
         print(gr+"["+yl+"~"+gr+"]"+yl+" Checking....\n"+wi)
         ISMAIL(email)
+
     elif opt.Mmail !=None:
         if cnet() !=True:
             print(rd+"\n["+yl+"!"+rd+"]"+yl+" Error: Please Check Your Internet Connection "+rd+"!!!"+wi)
@@ -114,16 +110,15 @@ def Main():
     elif opt.Fmail !=None:
         emails_file = opt.Fmail
         print(gr+"["+yl+"~"+gr+"]"+yl+" Checking....\n"+wi)
-        try:
-            fop = open(emails_file, "r")
-        except IOError:
-            print(yl+"\n["+rd+"!"+yl+"]"+yl+" No Such File: "+rd+emails_file+wi)
+        if not path.isfile(emails_file):
+            print(yl+"\n["+rd+"!"+yl+"]"+rd+"Error"+yl+" No Such File: "+rd+emails_file+wi)
             exit(1)
         try:
-            for email in fop:
-                if not email.strip() or "@" not in email: continue
-                email = email.strip()
-                ISMAIL(email)
+            with open(emails_file) as fop:
+                for email in fop:
+                    if not email.strip() or "@" not in email: continue
+                    email = email.strip()
+                    ISMAIL(email)
             fop.close()
         except (KeyboardInterrupt,EOFError):
             print(wi+" ")
@@ -136,7 +131,7 @@ if __name__=="__main__":
     Main()
 
 ##############################################################
-##################### 		        ##########################
+#####################               ##########################
 ##################### END OF SCRIPT ##########################
 #####################               ##########################
 ##############################################################
