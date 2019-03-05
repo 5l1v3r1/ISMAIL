@@ -111,7 +111,8 @@ def Main():
         emails_file = opt.Fmail
         print(gr+"["+yl+"~"+gr+"]"+yl+" Checking....\n"+wi)
         if not path.isfile(emails_file):
-            print(yl+"\n["+rd+"!"+yl+"]"+rd+"Error"+yl+" No Such File: "+rd+emails_file+wi)
+            print(yl+"\n["+rd+"!"+yl+"]"+rd+" Error:"+yl+" No Such File: [ "+rd+emails_file+yl+" ]"+rd+" !!!"+wi)
+            print(wi+"["+yl+"!"+wi+"]"+yl+" Please:"+wi+" Check Your Emails File Path."+yl+"!"+wi)
             exit(1)
         try:
             with open(emails_file) as fop:
@@ -129,7 +130,6 @@ def Main():
 
 if __name__=="__main__":
     Main()
-
 ##############################################################
 #####################               ##########################
 ##################### END OF SCRIPT ##########################
