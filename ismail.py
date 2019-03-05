@@ -86,6 +86,7 @@ def Main():
         email = email.strip()
         print(gr+"["+yl+"~"+gr+"]"+yl+" Checking....\n"+wi)
         ISMAIL(email)
+
     elif opt.Mmail !=None:
         if cnet() !=True:
             print(rd+"\n["+yl+"!"+rd+"]"+yl+" Error: Please Check Your Internet Connection "+rd+"!!!"+wi)
@@ -128,7 +129,6 @@ def Main():
 
 if __name__=="__main__":
     Main()
-
 
 ##############################################################
 #####################               ##########################
