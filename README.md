@@ -8,7 +8,7 @@
 # Install:
    - git clone https://www.github.com/Oseid/ISMAIL.git
    - cd ISMAIL/
-   - pip install mechanize
+   - pip install requests
 
 # Usage:
 
