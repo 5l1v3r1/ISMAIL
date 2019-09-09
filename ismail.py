@@ -15,8 +15,7 @@ wi="\033[1;37m"
 #
 #Libraries#
 try:
-    from os import system as sy, path; import requests,socket,optparse 
-    sy("")
+    from os import system as sy, path; sy("cls||clear");import requests,socket,optparse,re
 except ImportError:
     print(rd+"\n["+yl+"!"+rd+"] "+yl+"Error: Please Install [ "+gr+"Requests"+yl+" ] "+rd+" !!!"+wi)
     print(wi+"["+gr+"*"+wi+"] Use This Command:>"+gr+" pip install requests"+wi)
@@ -32,18 +31,25 @@ def cnet():
         pass
     return False
 #
+#Check-Email-Valiteion#
+checkmail = lambda email: any(re.match(reg, email) for reg in [r"(\W|^)[\w.+\-]*@gmail\.com(\W|$)", r"[a-zA-Z0-9_\.+]+@hotmail(\.[a-z]{2,3}){1,2}"])
+#
 #Check-Email-Function#
 #
-
 def ISMAIL(email):
     try:
         data = {"email": email}
         headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) RockMelt/0.9.58.494 Chrome/11.0.696.71 Safari/534.24'}
         response = requests.post("https://verifyemailaddress.com/result", headers=headers, data=data).text
         if "is valid" in response:
-            print(wi+"["+gr+"+"+wi+"] Email["+gr+email+wi+"] STATUS["+gr+" Found "+wi+"]")
+            print(wi+"["+gr+"+"+wi+"] Email["+gr+email+wi+"] STATUS["+gr+" FOUND "+wi+"]")
         else:
-            print(yl+"["+rd+"-"+yl+"] Email["+rd+email+yl+"] STATUS["+rd+" Not Found "+yl+"]"+wi)
+            #try another website
+            response = requests.post("https://www.infobyip.com/verifyemailaccount.php", headers=headers, data=data).text
+            if "Email account exists." in response:
+                print(wi+"["+gr+"+"+wi+"] Email["+gr+email+wi+"] STATUS["+gr+" FOUND "+wi+"]")
+            else:
+                print(yl+"["+rd+"-"+yl+"] Email["+rd+email+yl+"] STATUS["+rd+" NOTFD "+yl+"]"+wi)
     except(KeyboardInterrupt,EOFError):
         print(wi+" ")
         exit(1)
@@ -69,7 +75,11 @@ Examples:
      |--------
      | python ismail.py -f emails.txt
      |--------
-""")
+
+                        .:: Valid Emails To Check ::.
+                        [ Gmail.com ,,, hotmail.com ]
+
+""",version="2.0")
 def Main():
     parse.add_option('-s','-S','--single','--SINGLE', dest="Smail",type="string")
     parse.add_option('-m','-m','--many','--MANY', dest="Mmail",type="string")
@@ -80,7 +90,7 @@ def Main():
             print(rd+"\n["+yl+"!"+rd+"]"+yl+" Error: Please Check Your Internet Connection "+rd+"!!!"+wi)
             exit(1)
         email = opt.Smail
-        if not email.strip() or "@" not in email:
+        if not email.strip() or checkmail(email.strip()) == None or email.split("@")[-1].lower() not in ["gmail.com","hotmail.com"]:
             print(yl+"\n["+rd+"!"+yl+"] Invalid Email["+rd+email+yl+"] STATUS["+rd+" SKIPPED "+yl+"]"+wi)
             exit(1)
         email = email.strip()
@@ -100,7 +110,7 @@ def Main():
             exit(1)
         try:
             for email in emails:
-                if not email.strip() or "@" not in email: continue
+                if not email.strip() or checkmail(email.strip()) == None or email.split("@")[-1].lower() not in ["gmail.com","hotmail.com"]: continue
                 email = email.strip()
                 ISMAIL(email)
         except (KeyboardInterrupt,EOFError):
@@ -111,17 +121,19 @@ def Main():
         emails_file = opt.Fmail
         print(gr+"["+yl+"~"+gr+"]"+yl+" Checking....\n"+wi)
         if not path.isfile(emails_file):
-            print(yl+"\n["+rd+"!"+yl+"]"+rd+"Error"+yl+" No Such File: "+rd+emails_file+wi)
+            print(yl+"\n["+rd+"!"+yl+"]"+rd+" Error:"+yl+" No Such File: [ "+rd+emails_file+yl+" ]"+rd+" !!!"+wi)
+            print(wi+"["+yl+"!"+wi+"]"+yl+" Please:"+wi+" Check Your Emails File Path."+yl+"!"+wi)
             exit(1)
         try:
             with open(emails_file) as fop:
                 for email in fop:
-                    if not email.strip() or "@" not in email: continue
+                    if not email.strip():continue
+                    if not "@" in email or not checkmail(email.strip()): print(yl+"["+rd+"!"+yl+"]"+rd+" ERROR"+yl+": Email["+rd+email.strip()+yl+"] STATUS["+rd+" Invalid "+yl+"]"+wi);continue
                     email = email.strip()
                     ISMAIL(email)
             fop.close()
         except (KeyboardInterrupt,EOFError):
-            print(wi+" ")
+            print(rd+"\n["+yl+"!"+yl+"] Aborting..."+rd+"!")
             exit(1)
     else:
         print(parse.usage)
@@ -129,7 +141,6 @@ def Main():
 
 if __name__=="__main__":
     Main()
-
 ##############################################################
 #####################               ##########################
 ##################### END OF SCRIPT ##########################
