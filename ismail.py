@@ -90,13 +90,10 @@ def Main():
             print(rd+"\n["+yl+"!"+rd+"]"+yl+" Error: Please Check Your Internet Connection "+rd+"!!!"+wi)
             exit(1)
         email = opt.Smail
-        if not email.strip() or checkmail(email.strip()) == None or email.split("@")[-1].lower() not in ["gmail.com","hotmail.com"]:
-            print(yl+"\n["+rd+"!"+yl+"] Invalid Email["+rd+email+yl+"] STATUS["+rd+" SKIPPED "+yl+"]"+wi)
-            exit(1)
+        if not email.strip() or "@" not in email.strip() or not checkmail(email.strip()):exit(yl+"["+rd+"!"+yl+"]"+rd+" ERROR"+yl+": Email["+rd+email.strip()+yl+"] STATUS["+rd+" Invalid "+yl+"]"+wi)
         email = email.strip()
         print(gr+"["+yl+"~"+gr+"]"+yl+" Checking....\n"+wi)
         ISMAIL(email)
-
     elif opt.Mmail !=None:
         if cnet() !=True:
             print(rd+"\n["+yl+"!"+rd+"]"+yl+" Error: Please Check Your Internet Connection "+rd+"!!!"+wi)
@@ -110,7 +107,8 @@ def Main():
             exit(1)
         try:
             for email in emails:
-                if not email.strip() or checkmail(email.strip()) == None or email.split("@")[-1].lower() not in ["gmail.com","hotmail.com"]: continue
+                if not email.strip(): continue
+                if "@" not in email.strip() or not checkmail(email.strip()):print(yl+"["+rd+"!"+yl+"]"+rd+" ERROR"+yl+": Email["+rd+email.strip()+yl+"] STATUS["+rd+" Invalid "+yl+"]"+wi);continue
                 email = email.strip()
                 ISMAIL(email)
         except (KeyboardInterrupt,EOFError):
